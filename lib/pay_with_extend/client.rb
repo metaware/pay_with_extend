@@ -72,5 +72,9 @@ module PayWithExtend
     def get_secured_virtual_card(card_id)
       get("/virtualcards/#{card_id}", @api_token, true)
     end
+
+    def create_virtual_card(params)
+      post("/virtualcards", params, @api_token)
+    end
   end
 end
