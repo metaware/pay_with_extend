@@ -51,6 +51,20 @@ $extend_client.get_virtual_card(
 )
 ```
 
+Create Virtual Credit Card
+
+```
+$extend_client.create_virtual_card(
+  {
+    creditCardId: 'String',
+    recipient: 'demo@paywithextend.com',
+    recipientFirstName: 'Jane',
+    recipientLastName: 'Doe',
+    ...
+  }
+)
+```
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
