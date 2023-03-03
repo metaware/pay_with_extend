@@ -65,8 +65,27 @@ module PayWithExtend
       end
     end
 
+    def put(endpoint, body, token = nil)
+      endpoint_url = "#{PayWithExtend.configuration.base_url}#{endpoint}"
+      headers = {
+        "Content-Type" => "application/json",
+        "Accept" => PayWithExtend.configuration.api_version,
+      }
+      headers["Authorization"] = "Bearer #{token}" if !token.nil?
+      begin
+        response = RestClient::Request.execute(method: :put, url: endpoint_url, payload: body.to_json, headers: headers)
+        JSON.parse(response.body)
+      rescue RestClient::ExceptionWithResponse => exception
+        JSON.parse(exception.response.body)
+      rescue JSON::ParserError => exception
+        puts exception.response
+      rescue RestClient::Unauthorized, RestClient::Forbidden => exception
+        puts exception.response
+      end
+    end
+
     def get_virtual_card(card_id)
-      get("/virtualcards/#{card_id}", @api_token, false)
+      get("/virtualcards/#{card_id}", @api_token)
     end
 
     def get_secured_virtual_card(card_id)
@@ -75,6 +94,35 @@ module PayWithExtend
 
     def create_virtual_card(params)
       post("/virtualcards", params, @api_token)
+    end
+
+    def cancel_virtual_card(card_id)
+      put("/virtualcards/#{card_id}/cancel", {}, @api_token)
+    end
+
+    def cancel_virtual_card_update_request(card_id)
+      put("/virtualcards/#{card_id}/cancelupdate", {}, @api_token)
+    end
+
+    def update_virtual_card(card_id, params)
+      put("/virtualcards/#{card_id}", params, @api_token)
+    end
+
+    def reject_virtual_card(card_id)
+      put("/virtualcards/#{card_id}/reject", {}, @api_token)
+    end
+
+    def update_virtual_card_customer_support_code(card_id, params)
+      put("/virtualcards/#{card_id}/supportcode", params, @api_token)
+    end
+
+    def get_virtual_card_transactions(card_id)
+      get("/virtualcards/#{card_id}/transactions", @api_token)
+    end
+
+    # Source Credit Card
+    def get_credit_card
+      get("/creditcards/#{card_id}", @api_token)
     end
   end
 end
